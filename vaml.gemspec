@@ -6,8 +6,8 @@ require "vaml/version"
 Gem::Specification.new do |spec|
   spec.name          = "vaml"
   spec.version       = Vaml::VERSION
-  spec.authors       = ["Dipesh"]
-  spec.email         = ["dipeshgtm@gmail.com"]
+  spec.authors       = ["Dipesh", "Ronaldo"]
+  spec.email         = ["dipeshgtm@gmail.com", "raivil@gmail.com"]
 
   spec.summary       = %q{Do not expose your secret keys}
   spec.description   = %q{Get your secrets from vault}
@@ -30,9 +30,9 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "vault", "~> 0.10"
+  spec.add_dependency "vault", "~> 0.13"
 
-  spec.add_development_dependency "bundler", "~> 1.15"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "bundler", "~> 2.0"
+  spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "pry"
 end
