@@ -4,7 +4,6 @@ require 'vaml/config_handler'
 require 'vaml/version'
 require 'vaml/vault_config'
 require 'vaml/configuration'
-require 'vaml/github'
 require 'vaml/railtie' if defined?(Rails)
 
 module Vaml
@@ -12,7 +11,7 @@ module Vaml
   class << self
     attr_accessor :configuration
 
-    # @param [Hash] options {host: '0.0.0.0:8200', token: ENV["VTOKEN"], organization: ''}
+    # @param [Hash] options {host: '0.0.0.0:8200', token: ENV["VTOKEN"]}
     def configure(options)
       options[:host] ||= 'http://127.0.0.1:8200'
       options[:token] ||= ENV['VAULT_TOKEN']
@@ -26,12 +25,22 @@ module Vaml
       self
     end
 
-    def write_string(key, value)
-      write(key, {value: value})
+    def write_values(key, hash_values)
+      write(key, data: hash_values)
     end
 
-    def read_string(key)
-      read(key).data[:value]
+    # Stores a value with a key named 'secret'
+    def write_secret_string(key, value)
+      write_values(key, secret: value)
+    end
+
+    # Reads a value where the key is named 'secret'
+    def read_secret_string(key)
+      read(key)[:secret]
+    end
+
+    def read_values(key)
+      read(key)
     end
 
     def from_yaml(yml)
@@ -45,34 +54,14 @@ module Vaml
       Vault.with_retries(Vault::HTTPConnectionError) do
         val = Vault.logical.read(query)
         raise "VamlError: No secret was stored for #{query}" unless val
-        val
+
+        val.data[:data] # 'data' is necessary for KV2 engine.
       end
     end
-
 
     def write(key, value)
       Vault.with_retries(Vault::HTTPConnectionError) do
         Vault.logical.write(key, value)
-      end
-    end
-
-    def auth_with_github(token)
-      Vaml::Github.auth(token)
-    end
-
-    #   policy = <<-EOH
-    #     path "sys" {
-    #       policy = "deny"
-    #     }
-    #   EOH
-    #   Vault.sys.put_policy("dev", policy)
-    def add_policy(policy_name, policy_definition)
-      Vault.sys.put_policy(policy_name, policy_definition)
-    end
-
-    def list_policies
-      Vault.sys.policies.map do |name|
-        Vault.sys.policy(name)
       end
     end
   end
