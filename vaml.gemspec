@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name          = "vaml"
   spec.version       = Vaml::VERSION
   spec.authors       = ["Dipesh", "Ronaldo"]
-  spec.email         = ["dipeshgtm@gmail.com", "raivil@gmail.com"]
+  spec.email         = ["dipeshgtm@gmail.com", "ronaldo@wearebrane.com"]
 
   spec.summary       = %q{Do not expose your secret keys}
   spec.description   = %q{Get your secrets from vault}
